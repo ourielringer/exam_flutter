@@ -7,6 +7,11 @@ class Course {
   String subTitel;
   String description;
   String image;
-  Widget rating;
-  Course(this.titel, this.subTitel, this.description, this.image, this.rating);
+
+  Course(this.titel, this.subTitel, this.description, this.image);
+
+  factory Course.fromJson(dynamic json) {
+    return Course(json['titel'] as String, json['Subtitle'] as String,
+        json['Description'] as String, json['image'] as String);
+  }
 }

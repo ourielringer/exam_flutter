@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:exane_flutter/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'courses.dart';
+import 'itemDetails.dart';
 
 
 class UdemyCourses extends StatefulWidget {
@@ -22,8 +25,9 @@ class _UdemyCoursesState extends State<UdemyCourses> {
 
   String name;
   late bool isRating;
+
   List<Widget> courses =[];
-  List coursesDetails =[];
+  List<Course> coursesDetails =[];
 
   _UdemyCoursesState(this.name);
 
@@ -37,50 +41,55 @@ class _UdemyCoursesState extends State<UdemyCourses> {
   Future<void> pullData() async {
     print("pulldata1");
     final String response = await rootBundle.loadString('assets/data.json');
-    final data = await json.decode(response);
-    coursesDetails =  data['courses'];
-    print("pulldata");
+    final  parsedData  = await json.decode(response);
+    final List parsedList  = parsedData['courses'];
+    coursesDetails  = parsedList.map((val) =>  Course.fromJson(val)).toList();
     creatListWidjet();
   }
 
   void creatListWidjet(){
-    var rating = Row(
-      children: creatListIcon()
-    ) ;
+    print("creatListWidjet");
+    // var rating = Row(
+    //     // crossAxisAlignment: CrossAxisAlignment.end,
+    //     children: creatListIcon()
+    // ) ;
     for (var cours in coursesDetails) {
-      print("cours image::  ${cours['image']}" );
-      Widget child =  newItem(cours['titel'],cours['image'],rating);
+      print("cours image::  ${cours}" );
+      Widget child =  newItem(cours.titel,cours.image);
       courses.add(child);
     }
+    setState(() {});
   }
 
-
-  List<Widget> creatListIcon() {
-
-    isRating=true;
-    print(isRating);
-    List<IconButton> listIcons =[];
-
-    for (int i=0; i<5; i++){
-      IconButton iconButton = IconButton(
-        key: Key(i.toString()),
-        icon : isRating? Icon(Icons.star): Icon(Icons.favorite),color: Colors.yellow,
-        onPressed: ratinge,
-      );
-      listIcons.add(iconButton);
-    }
-   return listIcons;
-  }
-
-
-  void ratinge(){
-    setState(() {
-      isRating = !isRating;
-    });
-  }
-
-
-  Widget newItem(String titel, String image, Widget rating){
+  // List<Widget> creatListIcon() {
+  //
+  //   isRating=true;
+  //   print(isRating);
+  //   List <Widget>listIcons =[];
+  //
+  //   for (int i=0; i<5; i++){
+  //     Key key = Key(i.toString());
+  //     Flexible iconButton =  Flexible(
+  //       fit: FlexFit.tight,
+  //       flex: 1,
+  //       child: IconButton(
+  //         key: key,
+  //         icon : isRating? Icon(Icons.star): Icon(Icons.star_border),color: Colors.yellow,
+  //         onPressed: ratinge,
+  //       ),
+  //     );
+  //     listIcons.add(iconButton);
+  //   }
+  //  return listIcons;
+  // }
+  //
+  //
+  // void ratinge(){
+  //   setState(() {
+  //     isRating = !isRating;
+  //   });
+  // }
+  Widget newItem(String titel, String image,){
     Container child = Container(
       margin: EdgeInsets.only(bottom: 15),
         height: 100,
@@ -94,24 +103,36 @@ class _UdemyCoursesState extends State<UdemyCourses> {
             ),
             Expanded(
                 child:Container(
-                   color: Colors.yellowAccent,
+                   color: Colors.black12,
                    child:Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment:  MainAxisAlignment.spaceAround,
                       children: [
                         Text(titel),
-                        rating
+                        RatingBar.builder(
+                          itemSize: 15,
+                          initialRating: 3,
+                          minRating: 1,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                          itemBuilder: (context, _) => Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                        onRatingUpdate: (rating) {
+                         print(rating);
+                        },
+                        )
                       ],
                   )
               )
             )
-
-
             // )
           ],
         ),
       );
-
     return child;
   }
 
@@ -132,9 +153,25 @@ class _UdemyCoursesState extends State<UdemyCourses> {
         ],
       ),
       body: Container(
-        child:  ListView(
-          children: courses,
+        child:  ListView.builder(
+          itemCount: courses.length,
+          itemBuilder: (context, index) {
+            print("index ${index}");
+            print("context ${context}");
+            return GestureDetector(
+              child: courses[index],
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(
+                    builder:(BuildContext context)=>ItemDetaile(coursesDetails[index])
+                )
+                );
+              }
+            );
+              // courses[index];
+          },
         ),
+          // children: courses,
+
       ),
     );
   }
