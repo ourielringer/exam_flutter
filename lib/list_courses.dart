@@ -116,7 +116,7 @@ class _UdemyCoursesState extends State<UdemyCourses> {
                           direction: Axis.horizontal,
                           allowHalfRating: true,
                           itemCount: 5,
-                          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                          itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
                           itemBuilder: (context, _) => Icon(
                           Icons.star,
                           color: Colors.amber,

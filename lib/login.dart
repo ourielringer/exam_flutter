@@ -27,7 +27,7 @@ class Login_State extends State<Login> {
    _progresBarBull = false;
   }
 
- void _onSubmittedUsername(String value){
+ void _onChangedUsername(String value){
    setState(() {
     username = value;
     if(!_password.isEmpty){
@@ -37,7 +37,7 @@ class Login_State extends State<Login> {
    });
  }
 
- void _onSubmittedPassword(String value){
+ void _onChangePassword(String value){
    setState(() {
     _password = value;
     if(!username.isEmpty){
@@ -108,7 +108,7 @@ Widget build(BuildContext context) {
                     width: 50.0,
                     child: new CircularProgressIndicator(
                       value: null,
-                      strokeWidth: 7.0,
+                      strokeWidth: 3.0,
                     ),
                   ),
                 ),
@@ -159,7 +159,7 @@ Widget build(BuildContext context) {
                             // ),
                           ),
                           autofocus: false,
-                          onSubmitted: _onSubmittedUsername,
+                          onChanged: _onChangedUsername,
                         ),
                         SizedBox(height: 40),
                         TextField(
@@ -171,7 +171,7 @@ Widget build(BuildContext context) {
                           ),
                           autofocus: false,
                           obscureText: true,
-                          onSubmitted: _onSubmittedPassword,
+                          onChanged: _onChangePassword,
                         ),
                       ],
                     ),
